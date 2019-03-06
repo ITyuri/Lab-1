@@ -9,7 +9,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-// Необходимо, чтобы линковка происходила с DLL-библиотекой 
+// Необходимо, чтобы линковка происходила с DLL-библиотекой
 // Для работы с сокетам
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -17,12 +17,10 @@ using std::cerr;
 
 int main()
 {
-	// служебная структура для хранение информации
-	// о реализации Windows Sockets
-	WSADATA wsaData;
-
-	// старт использования библиотеки сокетов процессом
-	// (подгружается Ws2_32.dll)
+	WSADATA wsaData; // служебная структура для хранение информации
+					 // о реализации Windows Sockets
+					 // старт использования библиотеки сокетов процессом
+					 // (подгружается Ws2_32.dll)
 	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
 	// Если произошла ошибка подгрузки библиотеки
@@ -38,19 +36,19 @@ int main()
 	struct addrinfo hints;
 	ZeroMemory(&hints, sizeof(hints));
 
-	// AF_INET определяет, что используется сеть для работы с сокетом
-	hints.ai_family = AF_INET;
+	hints.ai_family = AF_INET; // AF_INET определяет, что будет
+							   // использоваться сеть для работы с сокетом
 	hints.ai_socktype = SOCK_STREAM; // Задаем потоковый тип сокета
 	hints.ai_protocol = IPPROTO_TCP; // Используем протокол TCP
-									 // Сокет биндится на адрес, чтобы принимать входящие соединения
-	hints.ai_flags = AI_PASSIVE;
+	hints.ai_flags = AI_PASSIVE; // Сокет будет биндиться на адрес,
+								 // чтобы принимать входящие соединения
 
-	// Инициализируем структуру, хранящую адрес сокета - addr.
-	// HTTP-сервер будет висеть на 8000-м порту локалхоста
+								 // Инициализируем структуру, хранящую адрес сокета - addr
+								 // Наш HTTP-сервер будет висеть на 8000-м порту локалхоста
 	result = getaddrinfo("127.0.0.1", "8000", &hints, &addr);
 
 	// Если инициализация структуры адреса завершилась с ошибкой,
-	// выведем сообщением об этом и завершим выполнение программы 
+	// выведем сообщением об этом и завершим выполнение программы
 	if (result != 0) {
 		cerr << "getaddrinfo failed: " << result << "\n";
 		WSACleanup(); // выгрузка библиотеки Ws2_32.dll
@@ -93,12 +91,14 @@ int main()
 		return 1;
 	}
 
+
 	const int max_client_buffer_size = 1024;
 	char buf[max_client_buffer_size];
 	int client_socket = INVALID_SOCKET;
 
 	for (;;) {
-		int client_socket = accept(listen_socket, NULL, NULL);
+		// Принимаем входящие соединения
+		client_socket = accept(listen_socket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET) {
 			cerr << "accept failed: " << WSAGetLastError() << "\n";
 			closesocket(listen_socket);
