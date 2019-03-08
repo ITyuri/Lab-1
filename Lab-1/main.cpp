@@ -91,8 +91,7 @@ int main()
 		return 1;
 	}
 
-
-	const int max_client_buffer_size = 1024;
+	const int max_client_buffer_size = 10;
 	char buf[max_client_buffer_size];
 	int client_socket = INVALID_SOCKET;
 
